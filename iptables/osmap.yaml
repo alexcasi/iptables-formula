@@ -1,0 +1,5 @@
+Debian:
+  service: iptables
+  packages:
+    - iptables
+    - iptables-persistent

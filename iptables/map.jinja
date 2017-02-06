@@ -1,0 +1,16 @@
+{% import_yaml 'iptables/defaults.yaml' as defaults %}
+{% import_yaml 'iptables/osmap.yaml' as osmap %}
+
+{# get the settings for the os_family grain #}
+{% set osfam = salt['grains.filter_by'](osmap) or {} %}
+
+{# merge the os family/codename specific data over the defaults #}
+{% do defaults.iptables.update(osfam) %}
+
+{# merge the pillar:lookup dict into the defaults/os specific dict #}
+{% set lookup = salt['pillar.get']('iptables:lookup',
+                                   default=defaults.iptables,
+                                   merge=True) %}
+
+{# merge the actual iptables pillar into the above combined dict #}
+{% set iptables = salt['pillar.get']('iptables', default=lookup, merge=True) %}
